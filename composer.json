@@ -1,0 +1,18 @@
+{
+    "name": "pmvc-plugin/yo_swagger",
+    "description": "Swagger spec generator for PMVC yo rest framework",
+    "type": "library",
+    "keywords": ["hello", "pmvc", "plug-in"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hill",
+            "email": "hill@kimo.com"
+        }
+    ],
+    "require": {
+        "pmvc-plugin/swagger": "*",
+        "pmvc-plugin/annotation": "*"
+    },
+    "minimum-stability": "dev"
+}
