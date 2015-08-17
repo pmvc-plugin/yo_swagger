@@ -25,9 +25,11 @@ class yo_swagger extends swagger\swagger
             $method = strtolower($r['method']);
             $doc = $annotation->get($r['action']);
             $this->parseDefinitions($doc);
+            $this->parseTags($doc);
             if (!empty($doc['parameters'])) {
                 $doc['parameters'] =  $this->parseParameters($doc);
             }
+            $doc['tags'] = str_replace('-',' ',$doc['tags']);
             $paths[$uri][$method]->mergeDefault($doc);
         }
         return $this->gen();
@@ -43,6 +45,32 @@ class yo_swagger extends swagger\swagger
             $parameters[] = $parameter; 
         }
         return $parameters;
+    }
+
+    function parseTags($doc)
+    {
+        if (empty($doc)) {
+            return;
+        }
+        foreach ($doc as $k=>$v) {
+            if(0 === strpos($k,'tags-')){
+                $tags = $this->get('tags');
+                $tag = new swagger\tag();
+                $arr = array(
+                    'name'=>$this->getTagId($k),
+                    'description'=>$v
+                );
+                $tag->mergeDefault($arr);
+                $tags[]=$tag;
+            }
+        }
+    }
+
+    function getTagId($k)
+    {
+        $k = explode('-',$k);
+        array_shift($k);
+        return join(' ',$k);
     }
 
     function parseDefinitions($doc)
