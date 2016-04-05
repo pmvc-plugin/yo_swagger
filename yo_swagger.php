@@ -15,9 +15,31 @@ class yo_swagger extends swagger\swagger
         $this->swagger =\PMVC\plug('swagger')->get();
     }
 
-    public function getSpec($yo)
+    public function fromYo($yo)
     {
         $routes = $yo->getRoutes();
+        return $this->getSpec($routes);
+    }
+
+    public function fromMapping($mapping)
+    {
+        $actions = $mapping->addMappingByKey(
+            null,
+            \PMVC\ACTION_MAPPINGS
+        );
+        $routes = [];
+        foreach ($actions as $key=>$action) {
+            $routes[] = [
+                'uri'=>$key,
+                'action'=>$action[_FUNCTION],
+                'method'=>'get'
+            ];
+        }
+        return $this->getSpec($routes);
+    }
+
+    public function getSpec($routes)
+    {
         $annotation = \PMVC\plug('annotation');
         $paths = $this->get('paths');
         foreach ($routes as $r) {
@@ -37,9 +59,9 @@ class yo_swagger extends swagger\swagger
 
     function parseParameters($doc)
     {
-        $doc['parameters'] = $doc->parseDataTypes($doc['parameters'],'example');
+        $dataTypes = $doc->getDataType('parameters','example');
         $parameters = new swagger\parameters();
-        foreach($doc['parameters'] as $param){
+        foreach($dataTypes as $param){
             $parameter = new swagger\parameter();
             $parameter->mergeDefault($param);
             $parameters[] = $parameter; 
@@ -75,7 +97,7 @@ class yo_swagger extends swagger\swagger
 
     function parseDefinitions($doc)
     {
-        if (empty($doc)) {
+        if (empty($doc) || !count($doc)) {
             return;
         }
         foreach ($doc as $k=>$v) {
