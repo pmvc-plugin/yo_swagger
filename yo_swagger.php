@@ -23,7 +23,7 @@ class yo_swagger extends swagger\swagger
 
     public function fromMapping($mapping)
     {
-        $actions = $mapping->addMappingByKey(
+        $actions = $mapping->addByKey(
             null,
             \PMVC\ACTION_MAPPINGS
         );
@@ -126,7 +126,7 @@ class yo_swagger extends swagger\swagger
                 $arr[$k] = $default[$groupid.'-'.$k];
             }
         }
-        $properties = $doc->parseDataTypes($arr['properties'],'example');
+        $properties = $doc->parseDataTypes($arr['properties'],'description');
         $properties_arr = array();
         foreach ($properties as $v) {
            $name = $v['name'];

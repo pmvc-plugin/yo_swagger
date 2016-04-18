@@ -1,6 +1,6 @@
 <?php
 PMVC\Load::plug();
-PMVC\addPlugInFolder('../');
+PMVC\addPlugInFolders(['../']);
 class YoSwaggerTest extends PHPUnit_Framework_TestCase
 {
     function testPlugin()
