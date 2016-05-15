@@ -119,7 +119,7 @@ class yo_swagger extends swagger\swagger
         foreach($keys as $k){
             $default[$groupid.'-'.$k] = '';
         }
-        $default = \PMVC\mergeDefault($default,$doc);
+        $default = array_replace($default,$doc);
         $arr = array();
         foreach($keys as $k){
             if (!empty($default[$groupid.'-'.$k])) {
