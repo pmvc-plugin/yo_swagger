@@ -21,17 +21,19 @@ class yo_swagger extends swagger\swagger
         return $this->getSpec($routes);
     }
 
-    public function fromMapping($mapping)
+    public function fromMapping($mappings)
     {
-        $actions = $mapping->addByKey(
-            null,
+        $actions = $mappings->addByKey(
             \PMVC\ACTION_MAPPINGS
         );
         $routes = [];
+        $c = \PMVC\plug('controller');
         foreach ($actions as $key=>$action) {
             $routes[] = [
                 'uri'=>$key,
-                'action'=>$action[_FUNCTION],
+                'action'=>$c->getActionCall(
+                    $mappings->findMapping($key)
+                ),
                 'method'=>'get'
             ];
         }
@@ -59,7 +61,7 @@ class yo_swagger extends swagger\swagger
 
     function parseParameters($doc)
     {
-        $dataTypes = $doc->getDataType('parameters','example');
+        $dataTypes = $doc->getDataType('parameters','description');
         $parameters = new swagger\parameters();
         foreach($dataTypes as $param){
             $parameter = new swagger\parameter();
@@ -126,7 +128,7 @@ class yo_swagger extends swagger\swagger
                 $arr[$k] = $default[$groupid.'-'.$k];
             }
         }
-        $properties = $doc->parseDataTypes($arr['properties'],'description');
+        $properties = $doc->parseDataTypes($arr['properties'],'example');
         $properties_arr = array();
         foreach ($properties as $v) {
            $name = $v['name'];
